@@ -13,7 +13,7 @@
     <artifactId>jv-signup-mc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>jv-signup-mc</name>
-    <description>This is the microservice to register userSecurity for Juan Valdez APP.
+    <description>This is the microservice to register user for Juan Valdez APP.
     </description>
     <properties>
         <java.version>11</java.version>
@@ -42,10 +42,10 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
