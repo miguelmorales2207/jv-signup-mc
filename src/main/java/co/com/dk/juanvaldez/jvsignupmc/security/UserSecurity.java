@@ -1,6 +1,5 @@
 package co.com.dk.juanvaldez.jvsignupmc.security;
 
-import co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.Company;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserSecurity {
 
     private Long id;
 

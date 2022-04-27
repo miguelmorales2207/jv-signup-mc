@@ -1,7 +1,13 @@
 package co.com.dk.juanvaldez.jvsignupmc.services;
 
+import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_REGISTER;
+import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_EMAIL_EXISTS;
+import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_CEDULA_EXISTS;
+
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.Prestamo;
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
+import co.com.dk.juanvaldez.jvsignupmc.data.domain.UserValidation;
+import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +19,6 @@ public class SignUpService {
     @Value("${spoonity.url.resource}")
     private String spoonityUrl;
 
-    @Value("${spoonity.uri.service.resource}")
-    private String spoonityUri;
-
     private final WebClientRequester webClientRequester;
     private Loggin logger = new Loggin();
 
@@ -24,7 +27,7 @@ public class SignUpService {
     }
 
     public Prestamo activate(String id) {
-        String uri = spoonityUrl + spoonityUri + id;
+        String uri = spoonityUrl + id;
         //logger.log("Requesting external service to ACTIVATE USER: {}", uri);
 
         logger.log("Requesting external service to ACTIVATE USER.");
@@ -36,8 +39,56 @@ public class SignUpService {
         return apiResponse;
     }
 
-    public User signup(User createUser) {
-        String uri = spoonityUrl + spoonityUri;
+    public User signUp(User createUser) throws BusinessRuleException {
+        //validacion de cedula y email
+        validateUserExists(createUser.getEmailAddress(), createUser.getCedula(),
+            createUser.getVendor());
+
+        //consumo API registrar usuario
+        User userCreated = registerUserSpoonityAPI(createUser);
+
+        //retorna usuario si no hay errores en el proceso
+        return userCreated;
+    }
+
+    private void validateUserExists(String email, String cedula, Integer vendor)
+        throws BusinessRuleException {
+        Boolean emailExists = userEmailExistsSpoonityAPI(email);
+        if (emailExists) {
+            throw new BusinessRuleException(
+                String.format("Usuario con email %1$s ya existe.", "1"));
+        }
+        Boolean cedulaExists = userCedulaExistsSpoonityAPI(cedula, vendor);
+        if (cedulaExists) {
+            throw new BusinessRuleException(
+                String.format("Usuario con cedula %1$s ya existe.", "1"));
+        }
+    }
+
+    private boolean userEmailExistsSpoonityAPI(String email) {
+        String parameters = "?email=" + email;
+        String uri = spoonityUrl + SPOONITY_USER_EMAIL_EXISTS + parameters;
+
+        UserValidation apiResponse = webClientRequester
+            .executeGetRequest(uri)
+            .bodyToMono(UserValidation.class).block();
+
+        return apiResponse.getExists();
+    }
+
+    private boolean userCedulaExistsSpoonityAPI(String cedula, Integer vendor) {
+        String parameters = "?cedula=" + cedula + "&vendor=" + vendor;
+        String uri = spoonityUrl + SPOONITY_USER_CEDULA_EXISTS + parameters;
+
+        UserValidation apiResponse = webClientRequester
+            .executeGetRequest(uri)
+            .bodyToMono(UserValidation.class).block();
+
+        return apiResponse.getExists();
+    }
+
+    private User registerUserSpoonityAPI(User createUser) {
+        String uri = spoonityUrl + SPOONITY_USER_REGISTER;
         //logger.log("Requesting external service to CREATE USER: {}", uri);
 
         logger.log("Requesting external service to CREATE USER.");

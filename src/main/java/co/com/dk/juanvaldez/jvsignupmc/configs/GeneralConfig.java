@@ -1,4 +1,4 @@
-package co.com.dk.juanvaldez.jvsignupmc.config;
+package co.com.dk.juanvaldez.jvsignupmc.configs;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
