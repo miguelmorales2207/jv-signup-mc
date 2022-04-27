@@ -4,7 +4,6 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_EMAIL_EXISTS;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_CEDULA_EXISTS;
 
-import co.com.dk.juanvaldez.jvsignupmc.data.domain.Prestamo;
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.UserValidation;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
@@ -26,14 +25,14 @@ public class SignUpService {
         this.webClientRequester = webClientRequester;
     }
 
-    public Prestamo activate(String id) {
+    public User activate(String id) {
         String uri = spoonityUrl + id;
         //logger.log("Requesting external service to ACTIVATE USER: {}", uri);
 
         logger.log("Requesting external service to ACTIVATE USER.");
-        Prestamo apiResponse = webClientRequester
+        User apiResponse = webClientRequester
             .executeGetRequest(uri)
-            .bodyToMono(Prestamo.class).block();
+            .bodyToMono(User.class).block();
         logger.log("ApiResponse of ACTIVATE USER received successfully.");
 
         return apiResponse;

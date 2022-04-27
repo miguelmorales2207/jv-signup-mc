@@ -2,7 +2,6 @@ package co.com.dk.juanvaldez.jvsignupmc.controllers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import co.com.dk.juanvaldez.jvsignupmc.data.domain.Prestamo;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import co.com.dk.juanvaldez.jvsignupmc.services.SignUpService;
@@ -30,13 +29,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/activate/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseVO<Prestamo>> activate(@PathVariable String id) {
+    public ResponseEntity<ApiResponseVO<User>> activate(@PathVariable String id) {
         logger.log("Start USER activation process.");
-        Prestamo prestamo = signUpService.activate(id);
+        User prestamo = signUpService.activate(id);
         logger.log("USER activated successfully from service.");
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponseVO.<Prestamo>builder()
+            .body(ApiResponseVO.<User>builder()
                 .code(HttpStatus.OK.value())
                 .message("UserSecurity has been successfully activated.")
                 .data(prestamo)
