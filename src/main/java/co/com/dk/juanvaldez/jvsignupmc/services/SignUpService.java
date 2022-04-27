@@ -41,8 +41,7 @@ public class SignUpService {
 
     public User signUp(User createUser) throws BusinessRuleException {
         //validacion de cedula y email
-        validateUserExists(createUser.getEmailAddress(), createUser.getCedula(),
-            createUser.getVendor());
+        validateUserExists(createUser.getEmailAddress(), createUser.getCedula());
 
         //consumo API registrar usuario
         User userCreated = registerUserSpoonityAPI(createUser);
@@ -51,21 +50,25 @@ public class SignUpService {
         return userCreated;
     }
 
-    private void validateUserExists(String email, String cedula, Integer vendor)
+    private void validateUserExists(String email, String cedula)
         throws BusinessRuleException {
-        Boolean emailExists = userEmailExistsSpoonityAPI(email);
-        if (emailExists) {
+        Integer vendor = 1;
+
+        UserValidation userEmailValidation = userEmailExistsSpoonityAPI(email);
+        System.out.println("//--- Vendor: " + userEmailValidation.getVendor().toString());
+        if (userEmailValidation.getExists()) {
             throw new BusinessRuleException(
-                String.format("Usuario con email %1$s ya existe.", "1"));
+                String.format("Usuario con Email %1$s ya existe.", email));
         }
+
         Boolean cedulaExists = userCedulaExistsSpoonityAPI(cedula, vendor);
         if (cedulaExists) {
             throw new BusinessRuleException(
-                String.format("Usuario con cedula %1$s ya existe.", "1"));
+                String.format("Usuario con Cedula %1$s ya existe.", cedula));
         }
     }
 
-    private boolean userEmailExistsSpoonityAPI(String email) {
+    private UserValidation userEmailExistsSpoonityAPI(String email) {
         String parameters = "?email=" + email;
         String uri = spoonityUrl + SPOONITY_USER_EMAIL_EXISTS + parameters;
 
@@ -73,7 +76,7 @@ public class SignUpService {
             .executeGetRequest(uri)
             .bodyToMono(UserValidation.class).block();
 
-        return apiResponse.getExists();
+        return apiResponse;
     }
 
     private boolean userCedulaExistsSpoonityAPI(String cedula, Integer vendor) {

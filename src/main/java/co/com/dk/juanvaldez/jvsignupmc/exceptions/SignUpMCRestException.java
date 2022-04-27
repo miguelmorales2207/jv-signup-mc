@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WebClientRestException extends RuntimeException {
+public class SignUpMCRestException extends RuntimeException {
 
     private int httpStatusCode;
 
@@ -14,16 +14,16 @@ public class WebClientRestException extends RuntimeException {
 
     private Object data;
 
-    public WebClientRestException(String message) {
+    public SignUpMCRestException(String message) {
         super(message);
     }
 
-    public WebClientRestException(String message, int httpStatusCode) {
+    public SignUpMCRestException(String message, int httpStatusCode) {
         super(message);
         this.httpStatusCode = httpStatusCode;
     }
 
-    public WebClientRestException(String message, int httpStatusCode, List<String> errors,
+    public SignUpMCRestException(String message, int httpStatusCode, List<String> errors,
         Object data) {
         super(message);
         this.httpStatusCode = httpStatusCode;

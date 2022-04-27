@@ -3,10 +3,10 @@ package co.com.dk.juanvaldez.jvsignupmc.http;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.RequestUserBody;
-import co.com.dk.juanvaldez.jvsignupmc.exceptions.SSOWebClientErrorHandler;
+import co.com.dk.juanvaldez.jvsignupmc.exceptions.handlers.SSOWebClientErrorHandler;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import co.com.dk.juanvaldez.jvsignupmc.security.UserSecurity;
-import co.com.dk.juanvaldez.jvsignupmc.exceptions.WebClientErrorHandler;
+import co.com.dk.juanvaldez.jvsignupmc.exceptions.handlers.WebClientErrorHandler;
 import co.com.dk.juanvaldez.jvsignupmc.utils.JwtTokenUtils;
 import co.com.dk.juanvaldez.jvsignupmc.vo.SSOAuthRequestVO;
 import co.com.dk.juanvaldez.jvsignupmc.vo.SSOAuthResponseVO;
@@ -69,11 +69,12 @@ public class WebClientRequester {
     }
 
     public ResponseSpec executeGetRequest(String uri) {
-        String token = getToken();
+        //String token = getToken();
 
         return webClient.get()
             .uri(uri)
-            .header(HttpHeaders.AUTHORIZATION, token)
+            //.header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, clientKey)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .onStatus(HttpStatus::isError, WebClientErrorHandler::manageError);
@@ -82,11 +83,12 @@ public class WebClientRequester {
     public ResponseSpec executePostRequest(String uri, RequestUserBody requestUser) {
         requestUser.setUser(getAuthenticatedUser());
 
-        String token = getToken();
+        //String token = getToken();
 
         return webClient.post()
-            .uri(uri)
-            .header(HttpHeaders.AUTHORIZATION, token)
+            .uri(uri).header(HttpHeaders.AUTHORIZATION, clientKey)
+            //.header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, clientKey)
             .accept(MediaType.APPLICATION_JSON)
             .body(Mono.just(requestUser), requestUser.getClass())
             .retrieve()
@@ -114,16 +116,16 @@ public class WebClientRequester {
 
     private SSOAuthResponseVO authenticate() {
 
-        SSOAuthRequestVO ssoAuthRequestDTO = SSOAuthRequestVO.builder()
+        SSOAuthRequestVO ssoAuthRequestVO = SSOAuthRequestVO.builder()
             .issuer(clientIssuer)
             .authKey(clientKey)
             .authSecret(clientSecret)
             .build();
 
-        SSOResponseVO<SSOAuthResponseVO> ssoResponseDTO = webClient.post()
+        SSOResponseVO<SSOAuthResponseVO> ssoResponseVO = webClient.post()
             .uri(authUrl)
             .accept(APPLICATION_JSON)
-            .body(Mono.just(ssoAuthRequestDTO), ssoAuthRequestDTO.getClass())
+            .body(Mono.just(ssoAuthRequestVO), ssoAuthRequestVO.getClass())
             .retrieve()
             .onStatus(HttpStatus::isError, SSOWebClientErrorHandler::manageError)
             .bodyToMono(new ParameterizedTypeReference
@@ -132,7 +134,7 @@ public class WebClientRequester {
 
         //log.trace("ssoResponseDTO: {}", ssoResponseDTO);
 
-        return ssoResponseDTO.getResult();
+        return ssoResponseVO.getResult();
     }
 
     /*private String saveCache(SSOAuthResponseVO ssoAuthResponseDTO, String redisKey) {
