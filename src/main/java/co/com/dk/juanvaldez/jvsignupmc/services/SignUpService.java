@@ -5,7 +5,7 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_CEDULA_EXISTS;
 
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
-import co.com.dk.juanvaldez.jvsignupmc.data.domain.UserValidation;
+import co.com.dk.juanvaldez.jvsignupmc.vo.responseAPI.UserValidation;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
@@ -25,45 +25,32 @@ public class SignUpService {
         this.webClientRequester = webClientRequester;
     }
 
-    public User activate(String id) {
-        String uri = spoonityUrl + id;
-        //logger.log("Requesting external service to ACTIVATE USER: {}", uri);
-
-        logger.log("Requesting external service to ACTIVATE USER.");
-        User apiResponse = webClientRequester
-            .executeGetRequest(uri)
-            .bodyToMono(User.class).block();
-        logger.log("ApiResponse of ACTIVATE USER received successfully.");
-
-        return apiResponse;
-    }
-
     public User signUp(User createUser) throws BusinessRuleException {
-        //validacion de cedula y email
-        validateUserExists(createUser.getEmailAddress(), createUser.getCedula());
 
-        //consumo API registrar usuario
+        logger.log("Validate if the USER email or cedula exists.");
+        validateUserExists(createUser);
+        logger.log("Email and cedula does not exists, continuous the USER register process.");
+
+        logger.log("Creating new USER...");
         User userCreated = registerUserSpoonityAPI(createUser);
+        logger.log("New USER has been created.");
 
-        //retorna usuario si no hay errores en el proceso
         return userCreated;
     }
 
-    private void validateUserExists(String email, String cedula)
-        throws BusinessRuleException {
-        Integer vendor = 1;
-
-        UserValidation userEmailValidation = userEmailExistsSpoonityAPI(email);
-        System.out.println("//--- Vendor: " + userEmailValidation.getVendor().toString());
-        if (userEmailValidation.getExists()) {
+    private void validateUserExists(User user) throws BusinessRuleException {
+        logger.log("Validate if the USER email exists.");
+        UserValidation userValidation = userEmailExistsSpoonityAPI(user.getEmailAddress());
+        if (userValidation.getExists()) {
             throw new BusinessRuleException(
-                String.format("Usuario con Email %1$s ya existe.", email));
+                String.format("Usuario con Email %1$s ya existe.", user.getEmailAddress()));
         }
 
-        Boolean cedulaExists = userCedulaExistsSpoonityAPI(cedula, vendor);
+        logger.log("Validate if the USER cedula exists.");
+        Boolean cedulaExists = userCedulaExistsSpoonityAPI(user.getCedula(), user.getVendor());
         if (cedulaExists) {
             throw new BusinessRuleException(
-                String.format("Usuario con Cedula %1$s ya existe.", cedula));
+                String.format("Usuario con Cedula %1$s ya existe.", user.getCedula()));
         }
     }
 
@@ -71,9 +58,11 @@ public class SignUpService {
         String parameters = "?email=" + email;
         String uri = spoonityUrl + SPOONITY_USER_EMAIL_EXISTS + parameters;
 
+        logger.log("Requesting external service to VALIDATE USER EMAIL.");
         UserValidation apiResponse = webClientRequester
             .executeGetRequest(uri)
             .bodyToMono(UserValidation.class).block();
+        logger.log("API Response of VALIDATE USER EMAIL received successfully.");
 
         return apiResponse;
     }
@@ -82,9 +71,11 @@ public class SignUpService {
         String parameters = "?cedula=" + cedula + "&vendor=" + vendor;
         String uri = spoonityUrl + SPOONITY_USER_CEDULA_EXISTS + parameters;
 
+        logger.log("Requesting external service to VALIDATE USER CEDULA.");
         UserValidation apiResponse = webClientRequester
             .executeGetRequest(uri)
             .bodyToMono(UserValidation.class).block();
+        logger.log("API Response of VALIDATE USER CEDULA received successfully.");
 
         return apiResponse.getExists();
     }
@@ -97,7 +88,7 @@ public class SignUpService {
         User apiResponse = webClientRequester
             .executePostRequest(uri, createUser)
             .bodyToMono(User.class).block();
-        logger.log("ApiResponse of CREATE USER received successfully.");
+        logger.log("API Response of CREATE USER received successfully.");
 
         return apiResponse;
     }

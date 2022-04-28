@@ -18,4 +18,13 @@ public class WebURIConstants {
     public static final String SPOONITY_USER_CEDULA_EXISTS = "/user/cedula/exists";
     public static final String SPOONITY_USER_REGISTER = "/user/register";
 
+    public static final String SPOONITY_USER_ACTIVATE_BY_SMS = "/user/activate/sms";
+    public static final String SPOONITY_USER_ACTIVATE_BY_EMAIL = "/user/activate/email";
+    public static final String SPOONITY_USER_ACTIVATE = "/user/activate";
+    public static final String SPOONITY_IS_VALIDATED = "/user/isValidated";
+
+    //PERMISSIONS
+    public static final String SERVICE = "SERVICE";
+    public static final String PUBLIC = "PUBLIC";
+
 }

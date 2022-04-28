@@ -2,14 +2,14 @@ package co.com.dk.juanvaldez.jvsignupmc.data.domain;
 
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.RequestUserBody;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class User extends RequestUserBody {
+
+    private static final long serialVersionUID = -3228787783470270554L;
 
     @JsonProperty("first_name")
     private String firstName;
@@ -33,7 +33,10 @@ public class User extends RequestUserBody {
     private Integer vendor;
 
     @JsonProperty("phone_number")
-    private String phoneNumber;
+    private Object phoneNumber;
+
+    @JsonProperty("birthdate")
+    private Integer birthdate;
 
     @JsonProperty("cedula")
     private String cedula;

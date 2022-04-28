@@ -6,8 +6,8 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.AUDIENCE
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.BEARER;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.UNAUTHORIZED_REQUEST;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.USER_SERVICE;
-import static co.com.dk.juanvaldez.jvsignupmc.constants.PermissionsConstants.PUBLIC;
-import static co.com.dk.juanvaldez.jvsignupmc.constants.PermissionsConstants.SERVICE;
+import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.PUBLIC;
+import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SERVICE;
 
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import com.fasterxml.jackson.databind.ObjectMapper;

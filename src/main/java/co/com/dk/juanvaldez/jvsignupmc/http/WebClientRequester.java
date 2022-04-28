@@ -105,7 +105,6 @@ public class WebClientRequester {
             return PREFIX_TOKEN.concat(token);
         }*/
         //log.trace("With this key {} was not found token in cache.", tokenCacheKey);
-
         //log.trace("Getting token from this url {} ", authUrl);
 
         SSOAuthResponseVO ssoAuthResponseVO = authenticate();
