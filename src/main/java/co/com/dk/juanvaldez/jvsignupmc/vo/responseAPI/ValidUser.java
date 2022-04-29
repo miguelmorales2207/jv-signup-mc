@@ -13,7 +13,7 @@ public class ValidUser implements Serializable {
     private static final long serialVersionUID = -3228787783470270554L;
 
     @JsonProperty("id")
-    private String id;
+    private Long id;
 
     @JsonProperty("first_name")
     private String firstName;
@@ -34,6 +34,6 @@ public class ValidUser implements Serializable {
     private Date dateUpdated;
 
     @JsonProperty("status")
-    private Date status;
+    private Status status;
 
 }

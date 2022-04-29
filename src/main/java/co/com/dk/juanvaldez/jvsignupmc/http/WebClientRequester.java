@@ -81,12 +81,12 @@ public class WebClientRequester {
     }
 
     public ResponseSpec executePostRequest(String uri, RequestUserBody requestUser) {
-        requestUser.setUser(getAuthenticatedUser());
+        //requestUser.setUser(getAuthenticatedUser());
 
         //String token = getToken();
 
         return webClient.post()
-            .uri(uri).header(HttpHeaders.AUTHORIZATION, clientKey)
+            .uri(uri)
             //.header(HttpHeaders.AUTHORIZATION, token)
             .header(HttpHeaders.AUTHORIZATION, clientKey)
             .accept(MediaType.APPLICATION_JSON)
@@ -160,8 +160,7 @@ public class WebClientRequester {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.log("Getting authenticated USER from or token.");
         UserSecurity userSecurity = (UserSecurity) authentication.getPrincipal();
-        //log.trace("UserSecurity obtained successfully from or token. {}", userSecurity);
-        logger.log("USER obtained successfully from or token.");
+        logger.log(String.format("User obtained successfully from or token. {}", userSecurity));
 
         return modelMapper
             .map(userSecurity, co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.User.class);
