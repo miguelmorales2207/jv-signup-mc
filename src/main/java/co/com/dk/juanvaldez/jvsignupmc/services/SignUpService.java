@@ -1,17 +1,17 @@
 package co.com.dk.juanvaldez.jvsignupmc.services;
 
+import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_MOBILE_EXISTS;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_REGISTER;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_EMAIL_EXISTS;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_CEDULA_EXISTS;
 
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
-import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCException;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
-import co.com.dk.juanvaldez.jvsignupmc.vo.responseAPI.UserValidation;
+import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.UserValidation;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
-import co.com.dk.juanvaldez.jvsignupmc.vo.responseAPI.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +28,14 @@ public class SignUpService {
         this.webClientRequester = webClientRequester;
     }
 
-    public ValidUser signUp(User createUser) throws BusinessRuleException, SignUpMCException {
+    public ValidUser signUp(User createUser) {
 
-        //logger.log("Validate if the USER email or cedula exists.");
+        logger.log("Validate if the USER email or cedula exists.");
         //validateUserExists(createUser);
-        //logger.log("Email and cedula does not exists, continuous the USER register process.");
+        logger.log("Email and cedula does not exists, continuous the USER register process.");
 
         logger.log("Creating new USER...");
-        ValidUser userCreated = registerUserSpoonityAPI(createUser);
+        ValidUser userCreated = registerUserSpoonityApi(createUser);
         logger.log("New USER has been created.");
 
         return userCreated;
@@ -43,55 +43,81 @@ public class SignUpService {
 
     private void validateUserExists(User user) throws BusinessRuleException {
         logger.log("Validate if the USER email exists.");
-        UserValidation userValidation = userEmailExistsSpoonityAPI(user.getEmailAddress());
-        if (userValidation.getExists()) {
+        boolean userValidation = userEmailExistsSpoonityApi(user.getEmailAddress());
+        if (userValidation) {
             throw new BusinessRuleException(
                 String.format("Usuario con Email %1$s ya existe.", user.getEmailAddress()));
         }
 
         logger.log("Validate if the USER cedula exists.");
-        Boolean cedulaExists = userCedulaExistsSpoonityAPI(user.getCedula(), user.getVendor());
+        boolean cedulaExists = userCedulaExistsSpoonityApi(user.getCedula(), user.getVendor());
         if (cedulaExists) {
             throw new BusinessRuleException(
                 String.format("Usuario con Cedula %1$s ya existe.", user.getCedula()));
         }
+
+        logger.log("Validate if the USER mobile exists.");
+        boolean mobileExists = userMobileExistsSpoonityApi(user.getVendor(),
+            user.getPhoneNumber().getNumber());
+        if (mobileExists) {
+            throw new BusinessRuleException(
+                String.format("Usuario con Mobile %1$s ya existe.", user.getCedula()));
+        }
+
     }
 
-    private UserValidation userEmailExistsSpoonityAPI(String email) throws SignUpMCRestException {
+    private boolean userEmailExistsSpoonityApi(String email) throws SignUpMCRestException {
         String parameters = "?email=" + email;
         String uri = spoonityUrl + SPOONITY_USER_EMAIL_EXISTS + parameters;
 
-        logger.log("Requesting external service to VALIDATE USER EMAIL.");
+        logger.log(String.format("Requesting external service to VALIDATE USER EMAIL:{}", uri));
         UserValidation apiResponse = webClientRequester
             .executeGetRequest(uri)
-            .bodyToMono(UserValidation.class).block();
+            .bodyToMono(UserValidation.class)
+            .block();
         logger.log("API Response of VALIDATE USER EMAIL received successfully.");
 
-        return apiResponse;
+        return apiResponse.getExists();
     }
 
-    private boolean userCedulaExistsSpoonityAPI(String cedula, Integer vendor)
+    private boolean userCedulaExistsSpoonityApi(String cedula, Integer vendor)
         throws SignUpMCRestException {
         String parameters = "?cedula=" + cedula + "&vendor=" + vendor;
         String uri = spoonityUrl + SPOONITY_USER_CEDULA_EXISTS + parameters;
 
-        logger.log("Requesting external service to VALIDATE USER CEDULA.");
+        logger.log(String.format("Requesting external service to VALIDATE USER CEDULA:{}", uri));
         UserValidation apiResponse = webClientRequester
             .executeGetRequest(uri)
-            .bodyToMono(UserValidation.class).block();
+            .bodyToMono(UserValidation.class)
+            .block();
         logger.log("API Response of VALIDATE USER CEDULA received successfully.");
 
         return apiResponse.getExists();
     }
 
-    private ValidUser registerUserSpoonityAPI(User createUser) throws SignUpMCRestException {
-        String uri = spoonityUrl + SPOONITY_USER_REGISTER;
-        //logger.log("Requesting external service to CREATE USER: {}", uri);
+    private boolean userMobileExistsSpoonityApi(Integer vendor, Long phone)
+        throws SignUpMCRestException {
+        String parameters = "?vendor=" + vendor + "&mobile=" + phone;
+        String uri = spoonityUrl + SPOONITY_USER_MOBILE_EXISTS + parameters;
 
-        logger.log("Requesting external service to CREATE USER.");
+        logger.log(String.format("Requesting external service to VALIDATE USER MOBILE:{}", uri));
+        UserValidation apiResponse = webClientRequester
+            .executeGetRequest(uri)
+            .bodyToMono(UserValidation.class)
+            .block();
+        logger.log("API Response of VALIDATE USER MOBILE received successfully.");
+
+        return apiResponse.getExists();
+    }
+
+    private ValidUser registerUserSpoonityApi(User createUser) throws SignUpMCRestException {
+        String uri = spoonityUrl + SPOONITY_USER_REGISTER;
+
+        logger.log(String.format("Requesting external service to CREATE USER:{}", uri));
         ValidUser apiResponse = webClientRequester
             .executePostRequest(uri, createUser)
-            .bodyToMono(ValidUser.class).block();
+            .bodyToMono(ValidUser.class)
+            .block();
         logger.log("API Response of CREATE USER received successfully.");
 
         return apiResponse;

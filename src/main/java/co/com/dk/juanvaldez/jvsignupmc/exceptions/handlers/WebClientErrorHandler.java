@@ -5,11 +5,10 @@ import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 public class WebClientErrorHandler {
 
     private static Loggin logger = new Loggin();
@@ -22,20 +21,21 @@ public class WebClientErrorHandler {
     }
 
     private static Mono<SignUpMCRestException> handleResponse(Map<String, Object> response) {
-        //logger.log("Response received on Web Client Error Handler: {}", response);
-        logger.log("Response received on Web Client Error Handler.");
+        logger.log(String.format("Response received on Web Client Error Handler: {}", response));
 
         List<String> errors = new ArrayList<>();
         StringBuilder message = new StringBuilder();
         Object data = null;
-        int code = 0;
+        int code = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
         if (response.get("message") != null) {
             message.append(response.get("message"));
+        } else {
+            message.append("Error without definition.");
         }
 
         if (response.get("error") != null) {
-            errors.addAll((List<String>) response.get("error"));
+            errors.add(response.get("error").toString());
         }
 
         if (response.get("data") != null) {

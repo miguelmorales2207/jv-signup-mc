@@ -16,6 +16,7 @@ public class WebURIConstants {
     //SPOONITY APIs
     public static final String SPOONITY_USER_EMAIL_EXISTS = "/user/email/exists";
     public static final String SPOONITY_USER_CEDULA_EXISTS = "/user/cedula/exists";
+    public static final String SPOONITY_USER_MOBILE_EXISTS = "/user/mobile/exists";
     public static final String SPOONITY_USER_REGISTER = "/user/register";
 
     public static final String SPOONITY_USER_ACTIVATE_BY_SMS = "/user/activate/sms";

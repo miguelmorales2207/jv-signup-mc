@@ -2,14 +2,15 @@ package co.com.dk.juanvaldez.jvsignupmc.exceptions.handlers;
 
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SSOAuthException;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
+import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 public final class SSOWebClientErrorHandler {
+
+    private static Loggin logger = new Loggin();
 
     private SSOWebClientErrorHandler() {
     }
@@ -20,13 +21,15 @@ public final class SSOWebClientErrorHandler {
     }
 
     private static Mono<SignUpMCRestException> handleResponse(Map<String, Object> response) {
-        //log.info("Response received on Web Client Error Handler: {}", response);
+        logger.log(String.format("Response received on Web Client Error Handler: {}", response));
 
         StringBuilder message = new StringBuilder();
         int code = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
         if (response.get("message") != null) {
             message.append(response.get("message"));
+        } else {
+            message.append("Security problem.");
         }
 
         if (response.get("messages") != null) {

@@ -4,11 +4,10 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_ACTIVATE;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_ACTIVATE_BY_SMS;
 
-import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCException;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
-import co.com.dk.juanvaldez.jvsignupmc.vo.responseAPI.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

@@ -3,13 +3,12 @@ package co.com.dk.juanvaldez.jvsignupmc.controllers;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
-import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCException;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import co.com.dk.juanvaldez.jvsignupmc.services.ActivateUserService;
 import co.com.dk.juanvaldez.jvsignupmc.services.SignUpService;
 import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponseVO;
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
-import co.com.dk.juanvaldez.jvsignupmc.vo.responseAPI.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +36,7 @@ public class UserController {
     public ResponseEntity<ApiResponseVO<Object>> activateSMS(
         @RequestParam(value = "session_identifier", required = true) String sessionId,
         @RequestParam(value = "phone", required = true) String phone,
-        @RequestParam(value = "country", required = true) String country) throws SignUpMCException {
+        @RequestParam(value = "country", required = true) String country) {
 
         logger.log("Start the process of sending the verification code for USER activation.");
         Object activationSMS = activateUserService.activateSMS(sessionId, phone, country);
@@ -53,8 +52,7 @@ public class UserController {
     @GetMapping(value = "/activate", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseVO<Object>> activate(
         @RequestParam(value = "token", required = true) String token,
-        @RequestParam(value = "session_identifier", required = true) String sessionId)
-        throws SignUpMCException {
+        @RequestParam(value = "session_identifier", required = true) String sessionId) {
 
         logger.log("Start USER activation process.");
         Object userValidated = activateUserService.activate(token, sessionId);
@@ -69,7 +67,7 @@ public class UserController {
 
     @PostMapping(value = "/register", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseVO<ValidUser>> signUp(@Valid @RequestBody User createUser)
-        throws BusinessRuleException, SignUpMCException {
+        throws BusinessRuleException {
         logger.log("Start USER register process.");
         ValidUser userCreated = signUpService.signUp(createUser);
         logger.log("USER registered successfully.");

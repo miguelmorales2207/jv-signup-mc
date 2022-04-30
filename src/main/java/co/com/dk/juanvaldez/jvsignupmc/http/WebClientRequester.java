@@ -1,29 +1,13 @@
 package co.com.dk.juanvaldez.jvsignupmc.http;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
 import co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.RequestUserBody;
-import co.com.dk.juanvaldez.jvsignupmc.exceptions.handlers.SSOWebClientErrorHandler;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
-import co.com.dk.juanvaldez.jvsignupmc.security.UserSecurity;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.handlers.WebClientErrorHandler;
-import co.com.dk.juanvaldez.jvsignupmc.utils.JwtTokenUtils;
-import co.com.dk.juanvaldez.jvsignupmc.vo.SSOAuthRequestVO;
-import co.com.dk.juanvaldez.jvsignupmc.vo.SSOAuthResponseVO;
-import co.com.dk.juanvaldez.jvsignupmc.vo.SSOResponseVO;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.TimeZone;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-//import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
@@ -70,7 +54,6 @@ public class WebClientRequester {
 
     public ResponseSpec executeGetRequest(String uri) {
         //String token = getToken();
-
         return webClient.get()
             .uri(uri)
             //.header(HttpHeaders.AUTHORIZATION, token)
@@ -82,9 +65,7 @@ public class WebClientRequester {
 
     public ResponseSpec executePostRequest(String uri, RequestUserBody requestUser) {
         //requestUser.setUser(getAuthenticatedUser());
-
         //String token = getToken();
-
         return webClient.post()
             .uri(uri)
             //.header(HttpHeaders.AUTHORIZATION, token)
@@ -95,15 +76,15 @@ public class WebClientRequester {
             .onStatus(HttpStatus::isError, WebClientErrorHandler::manageError);
     }
 
-    private String getToken() {
+    /*private String getToken() {
 
-        /*log.trace("Getting cache token with key {}", tokenCacheKey);
+        log.trace("Getting cache token with key {}", tokenCacheKey);
         String token = valueOperations.get(tokenCacheKey);
         if (token != null) {
             log.trace("With this key {} was obtained this token {} from cache successfully.",
             tokenCacheKey, token);
             return PREFIX_TOKEN.concat(token);
-        }*/
+        }
         //log.trace("With this key {} was not found token in cache.", tokenCacheKey);
         //log.trace("Getting token from this url {} ", authUrl);
 
@@ -111,9 +92,9 @@ public class WebClientRequester {
         //String cacheToken = this.saveCache(ssoAuthResponseDTO, tokenCacheKey);
         //return PREFIX_TOKEN.concat(cacheToken);
         return PREFIX_TOKEN.concat(ssoAuthResponseVO.getAccessToken());
-    }
+    }*/
 
-    private SSOAuthResponseVO authenticate() {
+    /*private SSOAuthResponseVO authenticate() {
 
         SSOAuthRequestVO ssoAuthRequestVO = SSOAuthRequestVO.builder()
             .issuer(clientIssuer)
@@ -134,7 +115,7 @@ public class WebClientRequester {
         //log.trace("ssoResponseDTO: {}", ssoResponseDTO);
 
         return ssoResponseVO.getResult();
-    }
+    }*/
 
     /*private String saveCache(SSOAuthResponseVO ssoAuthResponseDTO, String redisKey) {
 
@@ -156,7 +137,7 @@ public class WebClientRequester {
         return ssoAuthResponseDTO.getAccessToken();
     }*/
 
-    private co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.User getAuthenticatedUser() {
+    /*private co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.log("Getting authenticated USER from or token.");
         UserSecurity userSecurity = (UserSecurity) authentication.getPrincipal();
@@ -164,6 +145,6 @@ public class WebClientRequester {
 
         return modelMapper
             .map(userSecurity, co.com.dk.juanvaldez.jvsignupmc.data.domain.requestUser.User.class);
-    }
+    }*/
 
 }
