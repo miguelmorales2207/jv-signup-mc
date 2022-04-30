@@ -24,8 +24,7 @@ public class ActivateUserService {
         this.webClientRequester = webClientRequester;
     }
 
-    public Object activateSMS(String sessionId, String phone, String country)
-        throws SignUpMCRestException {
+    public Object activateSMS(String sessionId, String phone, String country) {
         logger.log("Send confirmation to USER by SMS.");
         Object activationSMS = userActivationBySMS(sessionId, phone, country);
         logger.log("Confirmation have been sent to USER by SMS.");
@@ -33,7 +32,7 @@ public class ActivateUserService {
         return activationSMS;
     }
 
-    public Object activate(String token, String sessionId) throws SignUpMCRestException {
+    public Object activate(String token, String sessionId) {
         logger.log("Activate USER.");
         Object userActivated = activateUser(token, sessionId);
         logger.log("USER has been activated successfully.");
@@ -54,6 +53,7 @@ public class ActivateUserService {
             parameters = parameters.concat(optionalParameter);
         }
         String uri = spoonityUrl + SPOONITY_USER_ACTIVATE_BY_SMS + parameters;
+
         logger.log(String.format("Requesting external service to SEND CONFIRMATION "
             + "for USER ACTIVATION by SMS: {}", uri));
         Object apiResponse = webClientRequester
@@ -65,9 +65,10 @@ public class ActivateUserService {
         return apiResponse;
     }
 
-    private Object activateUser(String token, String sessionId) throws SignUpMCRestException {
+    private Object activateUser(String token, String sessionId) {
         String parameters = "?token=" + token + "&session_identifier=" + sessionId;
         String uri = spoonityUrl + SPOONITY_USER_ACTIVATE + parameters;
+
         logger.log(String.format("Requesting external service to USER ACTIVATION: {}", uri));
         Object apiResponse = webClientRequester
             .executeGetRequest(uri)
@@ -77,9 +78,10 @@ public class ActivateUserService {
         return apiResponse;
     }
 
-    private ValidUser userIsValidate(String session) throws SignUpMCRestException {
+    private ValidUser userIsValidate(String session) {
         String parameters = "?session=" + session;
         String uri = spoonityUrl + SPOONITY_IS_VALIDATED + parameters;
+
         logger.log(String.format("Requesting external service to confirm USER VALIDATE: {}", uri));
         ValidUser apiResponse = webClientRequester
             .executeGetRequest(uri)
