@@ -5,7 +5,7 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_EMAIL_EXISTS;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_CEDULA_EXISTS;
 
-import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
+import co.com.dk.juanvaldez.jvsignupmc.vo.request.User;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
 import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.UserValidation;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
@@ -28,10 +28,10 @@ public class SignUpService {
         this.webClientRequester = webClientRequester;
     }
 
-    public ValidUser signUp(User createUser) {
+    public ValidUser signUp(User createUser) throws BusinessRuleException {
 
         logger.log("Validate if the USER email or cedula exists.");
-        //validateUserExists(createUser);
+        validateUserExists(createUser);
         logger.log("Email and cedula does not exists, continuous the USER register process.");
 
         logger.log("Creating new USER...");
@@ -61,7 +61,8 @@ public class SignUpService {
             user.getPhoneNumber().getNumber());
         if (mobileExists) {
             throw new BusinessRuleException(
-                String.format("Usuario con Mobile %1$s ya existe.", user.getCedula()));
+                String.format("Usuario con Mobile %1$s ya existe.",
+                    user.getPhoneNumber().getNumber()));
         }
 
     }

@@ -1,4 +1,4 @@
-package co.com.dk.juanvaldez.jvsignupmc.data.domain;
+package co.com.dk.juanvaldez.jvsignupmc.vo.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;

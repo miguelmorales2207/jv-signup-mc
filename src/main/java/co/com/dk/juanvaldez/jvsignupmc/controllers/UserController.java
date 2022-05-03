@@ -7,7 +7,7 @@ import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import co.com.dk.juanvaldez.jvsignupmc.services.ActivateUserService;
 import co.com.dk.juanvaldez.jvsignupmc.services.SignUpService;
 import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponseVO;
-import co.com.dk.juanvaldez.jvsignupmc.data.domain.User;
+import co.com.dk.juanvaldez.jvsignupmc.vo.request.User;
 import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
