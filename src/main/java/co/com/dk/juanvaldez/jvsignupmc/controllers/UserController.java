@@ -8,7 +8,7 @@ import co.com.dk.juanvaldez.jvsignupmc.services.ActivateUserService;
 import co.com.dk.juanvaldez.jvsignupmc.services.SignUpService;
 import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponseVO;
 import co.com.dk.juanvaldez.jvsignupmc.vo.request.User;
-import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUser;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,33 +33,31 @@ public class UserController {
     }
 
     @GetMapping(value = "/activate/sms", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseVO<Object>> activateSMS(
+    public ResponseEntity<ApiResponseVO> activateSMS(
         @RequestParam(value = "session_identifier", required = true) String sessionId,
         @RequestParam(value = "phone", required = true) String phone,
         @RequestParam(value = "country", required = true) String country) {
-
         logger.log("Start the process of sending the verification code for USER activation.");
-        Object activationSMS = activateUserService.activateSMS(sessionId, phone, country);
+        activateUserService.activateSMS(sessionId, phone, country);
         logger.log("Successful sending of verification code for USER activation.");
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponseVO.<Object>builder()
+            .body(ApiResponseVO.builder()
                 .code(HttpStatus.OK.value())
                 .message("Verification code has been sent successfully.")
                 .build());
     }
 
     @GetMapping(value = "/activate", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseVO<Object>> activate(
+    public ResponseEntity<ApiResponseVO> activate(
         @RequestParam(value = "token", required = true) String token,
         @RequestParam(value = "session_identifier", required = true) String sessionId) {
-
         logger.log("Start USER activation process.");
-        Object userValidated = activateUserService.activate(token, sessionId);
+        activateUserService.activate(token, sessionId);
         logger.log("USER activated successfully.");
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponseVO.<Object>builder()
+            .body(ApiResponseVO.builder()
                 .code(HttpStatus.OK.value())
                 .message("User has been activated successfully.")
                 .build());

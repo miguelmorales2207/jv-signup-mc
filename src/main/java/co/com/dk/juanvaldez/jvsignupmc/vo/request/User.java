@@ -22,7 +22,7 @@ public class User extends RequestUserBody {
 
     @NotNull
     @JsonProperty("anonymous")
-    private boolean anonymous;
+    private boolean anonymous = false;
 
     @NotNull
     @JsonProperty("email_address")

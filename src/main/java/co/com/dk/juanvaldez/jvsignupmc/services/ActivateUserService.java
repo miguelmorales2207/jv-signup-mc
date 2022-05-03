@@ -7,7 +7,7 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
-import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +24,13 @@ public class ActivateUserService {
         this.webClientRequester = webClientRequester;
     }
 
-    public Object activateSMS(String sessionId, String phone, String country) {
+    public void activateSMS(String sessionId, String phone, String country) {
         logger.log("Send confirmation to USER by SMS.");
         Object activationSMS = userActivationBySMS(sessionId, phone, country);
         logger.log("Confirmation have been sent to USER by SMS.");
-
-        return activationSMS;
     }
 
-    public Object activate(String token, String sessionId) {
+    public void activate(String token, String sessionId) {
         logger.log("Activate USER.");
         Object userActivated = activateUser(token, sessionId);
         logger.log("USER has been activated successfully.");
@@ -41,8 +39,6 @@ public class ActivateUserService {
         /*logger.log("Validate USER confirmation.");
         ValidUser z = userIsValidate("");
         logger.log("USER confirmation successfully.");*/
-
-        return userActivated;
     }
 
     private Object userActivationBySMS(String sessionId, String phone, String country)

@@ -16,13 +16,13 @@ public class PhoneNumber implements Serializable {
     private static final long serialVersionUID = -3228787783470270554L;
 
     @NotNull
-    @Min(2)
+    @Min(1)
     @JsonProperty("code")
-    private Integer code;
+    private String code;
 
     @NotNull
     @Min(9)
     @JsonProperty("number")
-    private Long number;
+    private String number;
 
 }

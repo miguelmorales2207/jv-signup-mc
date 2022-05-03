@@ -22,6 +22,18 @@ public class RestControllerExceptionHandler {
 
     private Loggin logger = new Loggin();
 
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<ApiResponseVO<Object>> handleEx(Exception ex) {
+        logger.log(String.format(ex.getMessage(), ex));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponseVO.builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .error(Collections.singletonList(ex.getMessage()))
+                .build());
+    }
+
     @ExceptionHandler(value = BusinessRuleException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ApiResponseVO<Object>> handleBusinessRuleException(
@@ -60,7 +72,7 @@ public class RestControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = SignUpMCRestException.class)
-    protected ResponseEntity<ApiResponseVO<Object>> handleOrchMenuRestException(
+    protected ResponseEntity<ApiResponseVO<Object>> handleSignUpMCRestException(
         SignUpMCRestException signUpMCRestException) {
         logger.log(String.format(signUpMCRestException.getMessage(), signUpMCRestException));
         return ResponseEntity.status(signUpMCRestException.getHttpStatusCode())

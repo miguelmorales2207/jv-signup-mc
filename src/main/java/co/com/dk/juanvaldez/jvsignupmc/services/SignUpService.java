@@ -7,11 +7,11 @@ import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY
 
 import co.com.dk.juanvaldez.jvsignupmc.vo.request.User;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
-import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.UserValidation;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.UserValidation;
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
-import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +61,7 @@ public class SignUpService {
             user.getPhoneNumber().getNumber());
         if (mobileExists) {
             throw new BusinessRuleException(
-                String.format("Usuario con Mobile %1$s ya existe.",
+                String.format("Usuario con Mobil %1$s ya existe.",
                     user.getPhoneNumber().getNumber()));
         }
 
@@ -78,7 +78,7 @@ public class SignUpService {
             .block();
         logger.log("API Response of VALIDATE USER EMAIL received successfully.");
 
-        return apiResponse.getExists();
+        return apiResponse.isExists();
     }
 
     private boolean userCedulaExistsSpoonityApi(String cedula, Integer vendor)
@@ -93,10 +93,10 @@ public class SignUpService {
             .block();
         logger.log("API Response of VALIDATE USER CEDULA received successfully.");
 
-        return apiResponse.getExists();
+        return apiResponse.isExists();
     }
 
-    private boolean userMobileExistsSpoonityApi(Integer vendor, Long phone)
+    private boolean userMobileExistsSpoonityApi(Integer vendor, String phone)
         throws SignUpMCRestException {
         String parameters = "?vendor=" + vendor + "&mobile=" + phone;
         String uri = spoonityUrl + SPOONITY_USER_MOBILE_EXISTS + parameters;
@@ -108,7 +108,7 @@ public class SignUpService {
             .block();
         logger.log("API Response of VALIDATE USER MOBILE received successfully.");
 
-        return apiResponse.getExists();
+        return apiResponse.isExists();
     }
 
     private ValidUser registerUserSpoonityApi(User createUser) throws SignUpMCRestException {

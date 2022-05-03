@@ -1,4 +1,4 @@
-package co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponse;
+package co.com.dk.juanvaldez.jvsignupmc.vo.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
