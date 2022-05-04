@@ -26,13 +26,13 @@ public class ActivateUserService {
 
     public void activateSMS(String sessionId, String phone, String country) {
         logger.log("Send confirmation to USER by SMS.");
-        Object activationSMS = userActivationBySMS(sessionId, phone, country);
+        userActivationBySMS(sessionId, phone, country);
         logger.log("Confirmation have been sent to USER by SMS.");
     }
 
     public void activate(String token, String sessionId) {
         logger.log("Activate USER.");
-        Object userActivated = activateUser(token, sessionId);
+        activateUser(token, sessionId);
         logger.log("USER has been activated successfully.");
 
         //USER is validate?

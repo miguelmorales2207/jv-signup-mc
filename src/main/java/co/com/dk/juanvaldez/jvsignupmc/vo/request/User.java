@@ -2,15 +2,20 @@ package co.com.dk.juanvaldez.jvsignupmc.vo.request;
 
 import co.com.dk.juanvaldez.jvsignupmc.vo.request.requestUser.RequestUserBody;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class User extends RequestUserBody {
+@AllArgsConstructor
+@Builder
+public class User extends RequestUserBody implements Serializable {
 
-    private static final long serialVersionUID = -3228787783470270554L;
+    private static final long serialVersionUID = 2690685597252211031L;
 
     @NotNull
     @JsonProperty("first_name")
