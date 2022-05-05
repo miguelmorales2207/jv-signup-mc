@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = UserController.class)
-class UserVOControllerTest {
+class UserControllerTest {
 
     @MockBean
     private SignUpService signUpService;
