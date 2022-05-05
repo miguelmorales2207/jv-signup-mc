@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends RequestUserBody implements Serializable {
+public class UserVO extends RequestUserBody implements Serializable {
 
     private static final long serialVersionUID = 2690685597252211031L;
 
@@ -46,7 +46,7 @@ public class User extends RequestUserBody implements Serializable {
     private Integer vendor;
 
     @JsonProperty("phone_number")
-    private PhoneNumber phoneNumber;
+    private PhoneNumberVO phoneNumberVO;
 
     @JsonProperty("birthdate")
     private Integer birthdate;

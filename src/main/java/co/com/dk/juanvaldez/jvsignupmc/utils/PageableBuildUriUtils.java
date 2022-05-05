@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 
 public final  class PageableBuildUriUtils {
 
-    private PageableBuildUriUtils() {
+    /*private PageableBuildUriUtils() {
     }
 
     public static String buildUri(String filter, Long companyId, Integer page,
@@ -42,6 +42,6 @@ public final  class PageableBuildUriUtils {
         }
 
         return result.toString();
-    }
+    }*/
 
 }

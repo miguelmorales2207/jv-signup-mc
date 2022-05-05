@@ -7,8 +7,8 @@ import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
 import co.com.dk.juanvaldez.jvsignupmc.services.ActivateUserService;
 import co.com.dk.juanvaldez.jvsignupmc.services.SignUpService;
 import co.com.dk.juanvaldez.jvsignupmc.vo.ApiResponseVO;
-import co.com.dk.juanvaldez.jvsignupmc.vo.request.User;
-import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.request.UserVO;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUserVO;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,14 +64,14 @@ public class UserController {
     }
 
     @PostMapping(value = "/register", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseVO<ValidUser>> signUp(@Valid @RequestBody User createUser)
+    public ResponseEntity<ApiResponseVO<ValidUserVO>> signUp(@Valid @RequestBody UserVO createUser)
         throws BusinessRuleException {
         logger.log("Start USER register process.");
-        ValidUser userCreated = signUpService.signUp(createUser);
+        ValidUserVO userCreated = signUpService.signUp(createUser);
         logger.log("USER registered successfully.");
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ApiResponseVO.<ValidUser>builder()
+            .body(ApiResponseVO.<ValidUserVO>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("User has been created successfully.")
                 .data(userCreated)

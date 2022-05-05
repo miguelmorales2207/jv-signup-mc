@@ -1,13 +1,15 @@
 package co.com.dk.juanvaldez.jvsignupmc.services;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import co.com.dk.juanvaldez.jvsignupmc.exceptions.BusinessRuleException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
-import co.com.dk.juanvaldez.jvsignupmc.vo.request.PhoneNumber;
-import co.com.dk.juanvaldez.jvsignupmc.vo.request.User;
-import co.com.dk.juanvaldez.jvsignupmc.vo.response.UserValidation;
-import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUser;
+import co.com.dk.juanvaldez.jvsignupmc.vo.request.PhoneNumberVO;
+import co.com.dk.juanvaldez.jvsignupmc.vo.request.UserVO;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.UserValidationVO;
+import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUserVO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,40 +30,118 @@ public class SignUpServiceTest {
     @Mock
     private WebClient.ResponseSpec responseSpec;
 
+    @Mock
+    private WebClient.ResponseSpec responseSpec2;
+
+    @Mock
+    private WebClient.ResponseSpec responseSpec3;
+
     @Test
     void test_RegisterUser_Should_CreateUser_When_ValidInput() {
 
         String parameterUri = "null/user/email/exists?email=Julito@email.com";
         String parameterUri2 = "null/user/cedula/exists?cedula=1234567890&vendor=1";
         String parameterUri3 = "null/user/mobile/exists?vendor=1&mobile=3004005060";
-        UserValidation userValidation = new UserValidation();
-        ValidUser validUser = new ValidUser();
+        UserValidationVO userValidationVO = new UserValidationVO();
+        ValidUserVO validUserVO = new ValidUserVO();
 
         when(webClientRequester.executeGetRequest(parameterUri))
             .thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(UserValidation.class))
-            .thenReturn(Mono.just(userValidation));
+        when(responseSpec.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO));
 
         when(webClientRequester.executeGetRequest(parameterUri2))
             .thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(UserValidation.class))
-            .thenReturn(Mono.just(userValidation));
+        when(responseSpec.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO));
 
         when(webClientRequester.executeGetRequest(parameterUri3))
             .thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(UserValidation.class))
-            .thenReturn(Mono.just(userValidation));
+        when(responseSpec.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO));
 
         when(webClientRequester.executePostRequest("null/user/register", getUser()))
             .thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(ValidUser.class))
-            .thenReturn(Mono.just(validUser));
+        when(responseSpec.bodyToMono(ValidUserVO.class))
+            .thenReturn(Mono.just(validUserVO));
 
         assertAll(() -> signUpService.signUp(getUser()));
     }
 
-    private User getUser() {
-        return User.builder()
+    @Test
+    void test_RegisterUser_Should_FailCreateUser_When_ParameterEmailAlreadyExists() {
+
+        String parameterUri = "null/user/email/exists?email=Julito@email.com";
+        UserValidationVO userValidationVO = new UserValidationVO();
+        userValidationVO.setExists(true);
+
+        when(webClientRequester.executeGetRequest(parameterUri))
+            .thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO));
+
+        assertThrows(BusinessRuleException.class,
+            () -> signUpService.signUp(getUser()));
+    }
+
+    @Test
+    void test_RegisterUser_Should_FailCreateUser_When_ParameterCedulaAlreadyExists() {
+
+        String parameterUri = "null/user/email/exists?email=Julito@email.com";
+        String parameterUri2 = "null/user/cedula/exists?cedula=1234567890&vendor=1";
+
+        UserValidationVO userValidationVO = new UserValidationVO();
+        userValidationVO.setExists(false);
+        when(webClientRequester.executeGetRequest(parameterUri))
+            .thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO));
+
+        UserValidationVO userValidationVO2 = new UserValidationVO();
+        userValidationVO2.setExists(true);
+        when(webClientRequester.executeGetRequest(parameterUri2))
+            .thenReturn(responseSpec2);
+        when(responseSpec2.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO2));
+
+        assertThrows(BusinessRuleException.class,
+            () -> signUpService.signUp(getUser()));
+    }
+
+    @Test
+    void test_RegisterUser_Should_FailCreateUser_When_ParameterMobileAlreadyExists() {
+
+        String parameterUri = "null/user/email/exists?email=Julito@email.com";
+        String parameterUri2 = "null/user/cedula/exists?cedula=1234567890&vendor=1";
+        String parameterUri3 = "null/user/mobile/exists?vendor=1&mobile=3004005060";
+
+        UserValidationVO userValidationVO = new UserValidationVO();
+        userValidationVO.setExists(false);
+        when(webClientRequester.executeGetRequest(parameterUri))
+            .thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO));
+
+        UserValidationVO userValidationVO2 = new UserValidationVO();
+        userValidationVO2.setExists(false);
+        when(webClientRequester.executeGetRequest(parameterUri2))
+            .thenReturn(responseSpec2);
+        when(responseSpec2.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO2));
+
+        UserValidationVO userValidationVO3 = new UserValidationVO();
+        userValidationVO3.setExists(true);
+        when(webClientRequester.executeGetRequest(parameterUri3))
+            .thenReturn(responseSpec3);
+        when(responseSpec3.bodyToMono(UserValidationVO.class))
+            .thenReturn(Mono.just(userValidationVO3));
+
+        assertThrows(BusinessRuleException.class,
+            () -> signUpService.signUp(getUser()));
+    }
+
+    private UserVO getUser() {
+        return UserVO.builder()
             .firstName("Julito")
             .lastName("Alimaña")
             .anonymous(false)
@@ -69,7 +149,7 @@ public class SignUpServiceTest {
             .password("Spoonity5")
             .terms(true)
             .vendor(1)
-            .phoneNumber(new PhoneNumber("57", "3004005060"))
+            .phoneNumberVO(new PhoneNumberVO("57", "3004005060"))
             .birthdate(27)
             .cedula("1234567890")
             .build();

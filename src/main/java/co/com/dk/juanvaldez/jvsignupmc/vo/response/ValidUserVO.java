@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ValidUser implements Serializable {
+public class ValidUserVO implements Serializable {
 
     private static final long serialVersionUID = 3311027123877852284L;
 
@@ -37,8 +37,8 @@ public class ValidUser implements Serializable {
     @JsonProperty("date_updated")
     private Date dateUpdated;
 
-    @JsonProperty("status")
-    private Status status;
+    @JsonProperty("statusVO")
+    private StatusVO statusVO;
 
     public Long getId() {
         return id;
@@ -68,8 +68,8 @@ public class ValidUser implements Serializable {
         return dateUpdated;
     }
 
-    public Status getStatus() {
-        return status;
+    public StatusVO getStatusVO() {
+        return statusVO;
     }
 
     public void setId(Long id) {
@@ -100,8 +100,8 @@ public class ValidUser implements Serializable {
         this.dateUpdated = dateUpdated;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusVO(StatusVO statusVO) {
+        this.statusVO = statusVO;
     }
 
 }

@@ -1,13 +1,11 @@
 package co.com.dk.juanvaldez.jvsignupmc.services;
 
-import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_IS_VALIDATED;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_ACTIVATE;
 import static co.com.dk.juanvaldez.jvsignupmc.constants.WebURIConstants.SPOONITY_USER_ACTIVATE_BY_SMS;
 
 import co.com.dk.juanvaldez.jvsignupmc.exceptions.SignUpMCRestException;
 import co.com.dk.juanvaldez.jvsignupmc.http.WebClientRequester;
 import co.com.dk.juanvaldez.jvsignupmc.loggin.Loggin;
-import co.com.dk.juanvaldez.jvsignupmc.vo.response.ValidUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +32,6 @@ public class ActivateUserService {
         logger.log("Activate USER.");
         activateUser(token, sessionId);
         logger.log("USER has been activated successfully.");
-
-        //USER is validate?
-        /*logger.log("Validate USER confirmation.");
-        ValidUser z = userIsValidate("");
-        logger.log("USER confirmation successfully.");*/
     }
 
     private Object userActivationBySMS(String sessionId, String phone, String country)
@@ -70,19 +63,6 @@ public class ActivateUserService {
             .executeGetRequest(uri)
             .bodyToMono(Object.class).block();
         logger.log("API Response of USER ACTIVATION received successfully.");
-
-        return apiResponse;
-    }
-
-    private ValidUser userIsValidate(String session) {
-        String parameters = "?session=" + session;
-        String uri = spoonityUrl + SPOONITY_IS_VALIDATED + parameters;
-
-        logger.log(String.format("Requesting external service to confirm USER VALIDATE: {}", uri));
-        ValidUser apiResponse = webClientRequester
-            .executeGetRequest(uri)
-            .bodyToMono(ValidUser.class).block();
-        logger.log("API Response of confirmation USER VALIDATE received successfully.");
 
         return apiResponse;
     }

@@ -11,7 +11,7 @@ public final class JwtTokenUtils {
 
     private static final String EXPIRATION_KEY = "exp";
 
-    private JwtTokenUtils() {
+    /*private JwtTokenUtils() {
         // Empty constructor
     }
 
@@ -25,6 +25,6 @@ public final class JwtTokenUtils {
         return getClaims(token, secret)
             .get(EXPIRATION_KEY, Date.class)
             .getTime();
-    }
+    }*/
 
 }

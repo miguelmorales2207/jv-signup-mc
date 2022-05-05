@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class JsonUtils {
 
-    private JsonUtils() {
+    /*private JsonUtils() {
 
     }
 
@@ -36,6 +36,6 @@ public final class JsonUtils {
         }
 
         return String.format("{%1$s}", data.toString());
-    }
+    }*/
 
 }
