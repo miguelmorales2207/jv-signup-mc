@@ -146,7 +146,7 @@ class UserVOControllerTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.code").value(201))
-            .andExpect(jsonPath("$.message").value("UserVO has been created successfully."))
+            .andExpect(jsonPath("$.message").value("User has been created successfully."))
             .andExpect(jsonPath("$.data").isNotEmpty())
             .andExpect(jsonPath("$.error").isEmpty());
 
